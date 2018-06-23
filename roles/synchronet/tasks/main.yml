@@ -1,0 +1,63 @@
+---
+- name: Add Group sbbs
+  group:
+    name: sbbs
+    state: present
+
+- name: Add User sbbs
+  user:
+    name: sbbs
+    comment: sbbs User
+    shell: /bin/bash
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+    group: sbbs
+    state: present
+
+- name: Create SBBS directory
+  file:
+    path: /home/sbbs/sbbs
+    state: directory
+    owner: sbbs
+    group: sbbs
+
+- name: Download sbbs installer
+  get_url:
+    url: http://cvs.synchro.net/cgi-bin/viewcvs.cgi/*checkout*/install/GNUmakefile
+    dest: /home/sbbs/sbbs/GNUmakefile
+    owner: sbbs
+    group: sbbs
+
+- name: Execute sbbs install
+  shell: cd /home/sbbs/sbbs; make install SYMLINK=1
+  become: yes
+  become_user: sbbs
+
+- name: Install SBBS SymLink
+  file:
+    src: /home/sbbs/sbbs
+    dest: /sbbs
+    owner: root
+    group: root
+    state: link
+
+- name: Install StartUp Script SBBS
+  copy:
+    src: lib/systemd/system/sbbs_ubuntu.service
+    dest: /lib/systemd/system/sbbs.service
+    mode: 0644
+  when: ansible_os_family == "Debian"
+
+
+- name: Install StartUp Script SBBS
+  copy:
+    src: lib/systemd/system/sbbs_centos.service
+    dest: /lib/systemd/system/sbbs.service
+    mode: 0644
+  when: ansible_os_family == "RedHat"
+
+- name: enable SBBS service
+  systemd:
+    name: sbbs
+    state: started
+    enabled: yes

@@ -1,0 +1,12 @@
+---
+- name: install Common Files
+  hosts: all
+  become: yes
+  become_method: sudo
+  gather_facts: true
+  roles:
+    - preparations
+    - synchronet
+
+  vars_files:
+    - vars/main.yml

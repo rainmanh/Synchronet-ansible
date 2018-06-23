@@ -1,0 +1,2 @@
+[synchronet]
+192.168.33.2  ansible_user=vagrant

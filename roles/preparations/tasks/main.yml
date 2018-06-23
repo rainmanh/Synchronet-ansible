@@ -1,0 +1,41 @@
+---
+- name: Preparations | Disable and Stop AutoUpdates
+  command: "{{item}}"
+  with_items:
+    - systemctl stop apt-daily.service
+    - systemctl disable apt-daily.service
+    - systemctl stop apt-daily.timer
+    - systemctl disable apt-daily.timer
+  when: ansible_os_family == "Debian"
+
+- name: Preparations Ubuntu | Installing Preliminary System Packages
+  apt:
+    name: "{{ item }}"
+    state: "latest"
+  with_items:
+    - wget
+    - zip
+    - unzip
+    - subversion
+    - cvs
+    - build-essential
+    - make
+    - pkg-config
+    - gcc
+    - autotools-dev
+    - libnspr4-dev
+    - libncurses5-dev
+  async: 900
+  poll: 5
+  when: ansible_os_family == "Debian"
+
+- name: Preparations Centos | Installing Preliminary System Packages
+  yum: pkg={{item}} state=installed
+  with_items:
+    - wget
+    - zip
+    - unzip
+    - "@Development tools"
+    - cvs
+    - nspr-devel
+    - ncurses-devel

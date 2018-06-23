@@ -1,0 +1,22 @@
+[Unit]
+Description=Synchronet BBS
+Documentation=man:sbbs
+After=network.target
+
+[Service]
+ExecStartPre=/bin/rm -f /var/run/sbbs/*
+Environment=SBBSROOT=/sbbs SBBSCTRL=/sbbs/ctrl
+ExecStartPre=/sbin/setcap 'cap_net_bind_service=+ep' /sbbs/src/sbbs3/gcc.linux.x64.exe.release/sbbs
+ExecStart=/sbbs/exec/sbbs nd
+PermissionsStartOnly=true
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=30
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=sbbs
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
