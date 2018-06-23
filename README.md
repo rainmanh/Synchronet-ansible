@@ -42,15 +42,15 @@ Also note: you need to double check the Vagrantfile got the right port forwardin
  * Centos 7.x
 
 
-##TO-DO
+## TO-DO
 
  - Ubuntu 18.04 (testing)
  - Templates
  - iptables
 
-##URL and Information
+## URL and Information
 
-Synchronet BBS has been created by Rob Swindell (a.k.a. Digital Man). (BBS software still fully supported ).
+Synchronet BBS has been created by **Rob Swindell (a.k.a. Digital Man)**. (BBS software still fully supported ).
 
  * https://en.wikipedia.org/wiki/Synchronet
  * http://www.synchro.net/
