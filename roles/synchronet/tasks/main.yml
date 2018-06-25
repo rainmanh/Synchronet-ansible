@@ -29,7 +29,7 @@
     group: sbbs
 
 - name: Execute sbbs install
-  shell: cd /home/sbbs/sbbs; make install SYMLINK=1
+  shell: cd /home/sbbs/sbbs; make install SYMLINK=1 DOSEMU=1
   become: yes
   become_user: sbbs
 
@@ -47,6 +47,29 @@
     dest: /lib/systemd/system/sbbs.service
     mode: 0644
   when: ansible_os_family == "Debian"
+
+
+- name: Downloads Terminfo
+  get_url:
+    url: http://cvs.synchro.net/cgi-bin/viewcvs.cgi/*checkout*/install/terminfo
+    dest: /sbbs/
+    owner: sbbs
+    group: sbbs
+
+- name: Downloads Termcap
+  get_url:
+    url: http://cvs.synchro.net/cgi-bin/viewcvs.cgi/*checkout*/install/termcap
+    dest: /sbbs/
+    owner: sbbs
+    group: sbbs
+
+- name: Finalise Terminfo installation
+  shell: cd /sbbs; tic terminfo
+  become: yes
+  become_user: sbbs
+
+- name: Finalise Termcap  installation
+  shell: cd /sbbs; cat termcap >> /etc/termcap
 
 
 - name: Install StartUp Script SBBS

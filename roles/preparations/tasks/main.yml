@@ -25,9 +25,22 @@
     - autotools-dev
     - libnspr4-dev
     - libncurses5-dev
+    - dosemu
   async: 900
   poll: 5
   when: ansible_os_family == "Debian"
+
+- name: Downloads Dosemu for Centos
+  get_url:
+    url: http://download1.rpmfusion.org/free/el/updates/6/x86_64//dosemu-1.4.0.8-15.20130205git.el6.x86_64.rpm
+    dest: /tmp/
+  when: ansible_os_family == "RedHat"
+
+- name: Installs Dosemu package.
+  yum:
+     name: /tmp/dosemu-1.4.0.8-15.20130205git.el6.x86_64.rpm
+     state: present
+  when: ansible_os_family == "RedHat"
 
 - name: Preparations Centos | Installing Preliminary System Packages
   yum: pkg={{item}} state=installed
@@ -39,3 +52,6 @@
     - cvs
     - nspr-devel
     - ncurses-devel
+    - kernel-headers
+    - kernel
+  when: ansible_os_family == "RedHat"

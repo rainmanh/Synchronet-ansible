@@ -2,8 +2,13 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "bento/ubuntu-16.04"
-  config.ssh.insert_key = false
+  #config.vm.box = "bento/ubuntu-16.04"
+  config.vm.box = "ubuntu/xenial64"
+  config.vm.network "private_network", ip: "192.168.33.39"
+  config.vm.network :forwarded_port, guest: 21, host: 8121
+  config.vm.network :forwarded_port, guest: 23, host: 8123
+  config.vm.network :forwarded_port, guest: 80, host: 8180
+  config.ssh.insert_key = true
 
   config.vm.provider :virtualbox do |v|
     v.name = "synchronet"
@@ -14,10 +19,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.hostname = "synchronet"
-  config.vm.network :private_network, ip: "192.168.33.2"
-  config.vm.network :forwarded_port, guest: 21, host: 21
-  config.vm.network :forwarded_port, guest: 23, host: 23
-  config.vm.network :forwarded_port, guest: 80, host: 23
+
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get install python -y
+  SHELL
 
   # Set the name of the VM. See: http://stackoverflow.com/a/17864388/100134
   config.vm.define :synchronet do |synchronet|
@@ -26,9 +31,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Ansible provisioner.
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "../../main.yml"
-    #ansible.inventory_path = "inventory"
     ansible.verbose = true
-    ansible.sudo = true
+    ansible.host_key_checking = false
+    #ansible.verbose = "vvvv"
   end
 
 end

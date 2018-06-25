@@ -4,3 +4,4 @@ main.retry
 
 #ansible
 .vagrant
+.log
